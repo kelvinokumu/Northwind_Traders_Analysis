@@ -1,3 +1,5 @@
+-- Group customers based on continents from the country column
+
 SELECT DISTINCT country
 FROM customers;
 
