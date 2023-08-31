@@ -71,7 +71,7 @@ LEFT JOIN orders o ON c.customer_id = o.customer_id
 GROUP BY c.customer_id, c.company_name
 ORDER BY order_count DESC;
 
--- -- Join Orders and Order Details tables to calculate total revenue per order
+-- Join Orders and Order Details tables to calculate total revenue per order
 SELECT o.order_id, SUM(od.unit_price * od.quantity * (1 - od.discount)) AS total_revenue
 FROM orders o
 INNER JOIN order_details od ON o.order_id = od.order_id
@@ -83,6 +83,26 @@ FROM employees e
 LEFT JOIN orders o ON e.employee_id = o.employee_id
 GROUP BY e.employee_name
 ORDER BY order_count DESC;
+
+-- ORDERS PER MONTH
+SELECT COUNT(*), EXTRACT(MONTH FROM order_date) AS order_month
+FROM orders
+GROUP BY order_month
+ORDER BY order_month;
+
+-- Sales per month for 2014
+SELECT
+    TO_CHAR(o.order_date, 'Month') AS order_month,
+	EXTRACT(MONTH FROM o.order_date) AS order_month_number,
+    SUM(od.unit_price * od.quantity * (1 - od.discount)) AS total_sales
+FROM
+    orders o
+JOIN
+    order_details od ON o.order_id = od.order_id
+WHERE
+    EXTRACT(YEAR FROM o.order_date) = 2014
+GROUP BY order_month_number, order_month
+ORDER BY order_month_number;
 
 SELECT orders.order_id, customers.company_name
 FROM orders
